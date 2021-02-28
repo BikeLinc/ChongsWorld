@@ -94,10 +94,8 @@ public class MapGenerator {
 	
 	private static int getLeaf(Random rand) {
 		int prob = rand.nextInt(15);
-		if(prob <  2 && prob == 1) {
-			return TileType.MANGOLEFT.getId();
-		} else if(prob <  2 && prob == 0) {
-			return TileType.MANGORIGHT.getId();
+		if(prob <  2) {
+			return TileType.MANGO.getId();
 		} else {
 			return TileType.LEAF.getId();
 		}

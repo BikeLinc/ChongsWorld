@@ -10,8 +10,7 @@ public enum TileType {
 	LAVA(4, true, "Lava"),
 	CLOUD(5, false, "Cloud"),
 	STONE(6, true, "Stone"),
-	MANGOLEFT(7,true, "MangoLeft"),
-	MANGORIGHT(8,true, "MangoRight"),
+	MANGO(7,true, "MangoLeft"),
 	WOOD(9,true, "Wood"),
 	LEAF(10,true, "Leaf");
 	

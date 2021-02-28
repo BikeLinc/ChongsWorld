@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector3;
 
 import gameMap.GameMap;
 import gameMap.Map;
+import inventory.Inventory;
+import inventory.InventoryItem;
 import world.TileType;
 
 public class Player extends Entity {
@@ -18,8 +20,8 @@ public class Player extends Entity {
 	public int health = 20;
 	public int mangos = 0;
 	public int active = 0;
-	public TileType tile;
-	public int[] inventory;
+	public Inventory inventory;
+	public InventoryItem item;
 	
 	public int animation = 0;
 	
@@ -36,74 +38,11 @@ public class Player extends Entity {
 	public Player(float x, float y, GameMap gameMap) {
 		super(x, y, EntityType.PLAYER, gameMap);
 		sprite = TextureRegion.split(new Texture("chongo2.png"), 16, 16);
-		inventory = new int[7];
-	}
-	
-	public TileType[] readInventory(int[] inventory, int size) {
-		TileType[] tiles = new TileType[size];
-		for(int i = 0; i < inventory.length; i++) {
-			if(inventory[i] != 0) {
-				if(i == 0) {
-					tiles[i] = TileType.GRASS;
-				} 
-				if(i == 1) {
-					tiles[i] = TileType.DIRT;
-				}
-				if(i == 2) {
-					tiles[i] = TileType.STONE;
-				}
-				if(i == 3) {
-					tiles[i] = TileType.WOOD;
-				}
-				if(i == 4) {
-					tiles[i] = TileType.MANGOLEFT;
-				}
-				if(i == 5) {
-					tiles[i] = TileType.LEAF;
-				}
-				if(i == 6) {
-					tiles[i] = TileType.LAVA;
-				}
-			}
-		}
-		return tiles;
+		inventory = new Inventory();
 	}
 	
 	@Override
 	public void update(float delta, float gravity) {
-		int max = 0;
-		for(int i = 0; i < inventory.length; i++) {
-			if(inventory[i] != 0) {
-				max++;
-			}
-		}
-			if(max >= 1 && Gdx.input.isKeyPressed(Keys.NUM_1)) {
-				active = 0;
-			}
-			if(max >= 2 && Gdx.input.isKeyPressed(Keys.NUM_2)) {
-				active = 1;
-			}
-			if(max >= 3 && Gdx.input.isKeyPressed(Keys.NUM_3)) {
-				active = 2;
-			}
-			if(max >= 4 && Gdx.input.isKeyPressed(Keys.NUM_4)) {
-				active = 3;
-			}
-			if(max >= 5 && Gdx.input.isKeyPressed(Keys.NUM_5)) {
-				active = 4;
-			}
-			if(max >= 6 && Gdx.input.isKeyPressed(Keys.NUM_6)) {
-				active = 5;
-			}
-			if(max >= 7 && Gdx.input.isKeyPressed(Keys.NUM_7)) {
-				active = 6;
-			}
-			
-		TileType[] type = readInventory(inventory, max);
-		if(max != 0) {
-			tile = type[active];
-		}
-		
 			
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += JUMP_VELOCITY * getWeight();
@@ -167,48 +106,23 @@ public class Player extends Entity {
 	public void build(Camera camera, Map map) {
 		if(Gdx.input.isTouched()) {
 			Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			
+			// Set Tile
 			if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-				
-				if(tile != null && inventory[active] > 0) {
-					map.setTile(tile,1, pos.x, pos.y);
-					inventory[active] -= 1;
+				if(item != null) {
+					map.setTile(item.getType(), 1, pos.x, pos.y);
 				}
-				
 			}
+			
+			// Break Tile
 			if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 				TileType topTile = map.getTileTypeByLocation(1, pos.x, pos.y);
 				TileType bottomTile = map.getTileTypeByLocation(0, pos.x, pos.y);
-				if (topTile != null  || bottomTile != null && topTile != TileType.SKY && bottomTile != TileType.SKY && topTile != TileType.CLOUD && bottomTile != TileType.CLOUD) {
-					
-					if(topTile == TileType.GRASS || bottomTile == TileType.GRASS) {
-						inventory[0] += 1;
-					}
-					
-					if(topTile == TileType.DIRT || bottomTile == TileType.DIRT) {
-						inventory[1] += 1;
-					}
-					
-					if(topTile == TileType.STONE || bottomTile == TileType.STONE) {
-						inventory[2] += 1;
-					}
-					
-					if(topTile == TileType.WOOD || bottomTile == TileType.WOOD) {
-						inventory[3] += 1;
-					}
-					
-					if(topTile == TileType.MANGOLEFT || topTile == TileType.MANGORIGHT) {
-						inventory[4] += 1;
-					}
-					
-					if(topTile == TileType.LEAF || bottomTile == TileType.LEAF) {
-						inventory[5] += 1;
-					}
-					
-					if(topTile == TileType.LAVA || bottomTile == TileType.LAVA) {
-						inventory[6] += 1;
-					}
+				if(topTile != TileType.SKY && topTile != null || bottomTile != TileType.SKY && bottomTile != null) {
+					inventory.add(topTile);
 				}
-				map.setTile(TileType.SKY,1, pos.x, pos.y);
+				map.setTile(TileType.SKY, 0, pos.x, pos.y);
+				map.setTile(TileType.SKY, 1, pos.x, pos.y);
 			}
 		}
 	}

@@ -2,7 +2,6 @@ package userinterface;
 
 import java.io.File;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 
 import entities.Camera;
+import inventory.Inventory;
+import inventory.InventoryItem;
 
 public class UIManager {
 
@@ -51,83 +52,26 @@ public class UIManager {
 		yStart = pos.y;
 	}
 	
-	public void drawPlayerInformation(SpriteBatch batch, String health, Color color1, int[] inventory, int selected) {
-		float x = 0;
-		drawTextWithBackground(batch, "Health " +health, color1, Color.LIGHT_GRAY, 15, 20, 5);
+	public void drawPlayerInformation(SpriteBatch batch, String health, String[] inventory, InventoryItem item) {
+		Color bg = Color.LIGHT_GRAY;
+		Color color = Color.MAROON;
 		
-		String[] inv = readInventory(inventory);
-		for(int i = 0; i < inv.length; i++) {
-			if(inv[i] != "") {
-				Color color = Color.BLACK;
-				Color bg = Color.LIGHT_GRAY;
-				
-				if(i == selected) {
-					bg = Color.WHITE;
-				}
-				
-				if(i == 0) {
-					color = Color.GREEN;
-				} 
-				if(i == 1) {
-					color = Color.BROWN;
-				}
-				if(i == 2) {
-					color = Color.DARK_GRAY;
-				}
-				if(i == 3) {
-					color = Color.GOLD;
-				}
-				if(i == 4) {
-					color = Color.CORAL;
-				}
-				if(i == 5) {
-					color = Color.GREEN;
-				}
-				if(i == 6) {
-					color = Color.MAROON;
-				}
-				
-				if(i == 0) {
-					drawTextWithBackground(batch, inv[i], color, Color.LIGHT_GRAY, 15, 430, 5);
-					x += 15 + getTextWidth(inv[i]);
+		drawTextWithBackground(batch, "Health " + health, color, bg, 15, 20, 5);
+		
+		color = Color.BLACK;
+		float xOffset = 0;
+		
+		for(String str : inventory) {
+			if(str != "") {
+				if(str == inventory[0]) {
+					drawTextWithBackground(batch, str, color, Color.LIGHT_GRAY, 15, 430, 5);
+					xOffset += 15 + getTextWidth(str);
 				} else {
-					drawTextWithBackground(batch, inv[i], color, Color.LIGHT_GRAY, 20 + x, 430, 5);
-					x += 20 + getTextWidth(inv[i]);
+					drawTextWithBackground(batch, str, color, Color.LIGHT_GRAY, 20 + xOffset, 430, 5);
+					xOffset += 20 + getTextWidth(str);
 				}
 			}
 		}
-	}
-	
-	public String[] readInventory(int[] inventory) {
-		String[] str = new String[inventory.length];
-		for(int i = 0; i < inventory.length; i++) {
-			if(inventory[i] != 0) {
-				if(i == 0) {
-					str[i] = inventory[i] + " Grass";
-				} 
-				if(i == 1) {
-					str[i] = inventory[i] + " Dirt";
-				}
-				if(i == 2) {
-					str[i] = inventory[i] + " Stone";
-				}
-				if(i == 3) {
-					str[i] = inventory[i] + " Wood";
-				}
-				if(i == 4) {
-					str[i] = inventory[i] + " Mango";
-				}
-				if(i == 5) {
-					str[i] = inventory[i] + " Leaf";
-				}
-				if(i == 6) {
-					str[i] = inventory[i] + " Lava";
-				}
-			} else {
-				str[i] = "";
-			}
-		}
-		return str;
 	}
 	
 	public void drawTextWithBackground(SpriteBatch batch, String text, Color foregroundColor, Color backgroundColor, float x, float y, float margin) {

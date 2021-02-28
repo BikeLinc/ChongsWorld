@@ -2,14 +2,13 @@ package game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import entities.Camera;
 import gameMap.Map;
+import inventory.Inventory;
 import userinterface.UIManager;
-import world.TileType;
 
 public class MainGameLoop extends ApplicationAdapter {
 	
@@ -49,8 +48,9 @@ public class MainGameLoop extends ApplicationAdapter {
 		// UI Update
 		batch.begin();
 		ui.update(camera);
-		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), Color.MAROON, map.getPlayer().inventory, map.getPlayer().active);
+		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().item);
 		batch.end();
+		
 		
 		if(seconds > 25) { 
 			map.getPlayer().animate();
@@ -67,6 +67,11 @@ public class MainGameLoop extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
+		String[] inventory = map.getPlayer().inventory.getInventoryAsLabeledStringArray();
+		for(int i = 0; i < inventory.length; i++) {
+			System.out.println(inventory[i]);
+		}
+		
 		map.dispose();
 		batch.dispose();
 	}
