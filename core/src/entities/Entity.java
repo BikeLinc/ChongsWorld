@@ -1,15 +1,9 @@
 package entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 import gameMap.GameMap;
-import gameMap.Map;
-import world.TileType;
 
 public abstract class Entity {
 	

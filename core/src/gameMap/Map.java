@@ -2,6 +2,7 @@ package gameMap;
 
 import java.awt.Point;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,7 +22,7 @@ public class Map extends GameMap {
 	public Map() {
 		this.data = MapLoader.loadMap("basic", "grass");
 		
-		tiles = TextureRegion.split(new Texture(FileTool.getPath() + "/assets/tiles3.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+		tiles = TextureRegion.split(new Texture(FileTool.getPath() + "/assets/tiles4.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 	}
 
 	/**
@@ -30,13 +31,21 @@ public class Map extends GameMap {
 	public void render(OrthographicCamera camera, SpriteBatch batch) {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		
+		int x,y;
 		for (int layer = 0; layer < getLayers(); layer++) {
 			for (int row = 0; row < getHeight(); row++) {
 				for (int col = 0; col < getWidth(); col++) {
 					TileType type = this.getTileTypeByCoordinate(layer, col, row);
-					if (type != null)
-						batch.draw(tiles[0][type.getId() - 1], col * TileType.TILE_SIZE , row * TileType.TILE_SIZE);
+					if (type != null) {
+					y =	(type.getId() -1)/6;
+					x = (type.getId() -1) - (y * 6);
+						if(layer == 1) {
+							batch.setColor(Color.LIGHT_GRAY);
+						} else {
+							batch.setColor(Color.WHITE);
+						}
+						batch.draw(tiles[y][x], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE, 16,16);
+					}
 				}
 			}
 		}
@@ -87,14 +96,14 @@ public class Map extends GameMap {
 		if(coord.x < 0 || coord.x >= getWidth() || coord.y < 0 || coord.y >= getHeight()) {
 			System.out.println("You cant build here, looks like your out of this world!");
 		}  else {
-			if(TileType.getTileById(data.map[0][getHeight() - coord.y -1][coord.x]) != type.SKY) {
+			if(TileType.getTileById(data.map[0][getHeight() - coord.y -1][coord.x]) != TileType.SKY) {
 				data.map[0][getHeight() - coord.y -1][coord.x] = type.getId();
 			}
 			if(type != null) {
 				data.map[layer][getHeight() - coord.y -1][coord.x] = type.getId();
 			}
 		}
-		//System.out.println("Tile @ (" + coord.x + ", " + coord.y + ") " + getTileTypeByCoordinate(layer, coord.x, coord.y).getName() + " set to " + type.getName());
+		//System.out.println("Tile @ (" + coord.x + ", " + coord.y + ") on Layer: " + layer + " | "+ getTileTypeByCoordinate(layer, coord.x, coord.y).getName() + " set to " + type.getName());
 	}
 	
 	@Override

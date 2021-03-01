@@ -66,12 +66,16 @@ public class Inventory {
 		}
 	}
 	
+	public List<InventoryItem> getItems() {
+		return items;
+	}
+	
 	public String[] getInventoryAsLabeledStringArray() {
 		String[] str = new String[items.size()];
 		for(int i = 0; i < str.length; i++) {
 			InventoryItem item = items.get(i);
 			if(item.getType() != null) {
-				str[i] = item.getNumber() + " " + item.getType().toString();
+				str[i] = item.getNumber() + " " + item.getType().getName();
 			}
 		}
 		return str;
@@ -80,8 +84,13 @@ public class Inventory {
 	public int getSize() {
 		return items.size();
 	}
+	
 	public boolean isEmpty() {
 		return items.isEmpty();
+	}
+	
+	public boolean isEmpty(InventoryItem item) {
+		return items.contains(item);
 	}
 }
 

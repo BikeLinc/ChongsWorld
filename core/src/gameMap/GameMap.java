@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import entities.Entity;
-import entities.EntityType;
 import entities.Player;
 import world.TileType;
 
@@ -90,11 +89,9 @@ public abstract class GameMap {
 		
 		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y + height) / TileType.TILE_SIZE); row++) {
 			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x + width) / TileType.TILE_SIZE); col++) {
-				for (int layer = 0; layer < getLayers(); layer++) {
-					TileType type = getTileTypeByCoordinate(layer, col, row);
+					TileType type = getTileTypeByCoordinate(5, col, row);
 					if (type != null && type.isCollidable())
 						return true;
-				}
 			}
 		}
 		return false;

@@ -1,7 +1,5 @@
 package entities;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -20,17 +18,15 @@ import world.TileType;
 
 public class Player extends Entity {
 	
-	public int health = 20;
-	public int mangos = 0;
-	public int active = 0;
 	public Inventory inventory;
 	public InventoryItem item;
-	public int selItem = 0;
+	public int selectedItem = 0;
 	
+	public int health = 20;
 	public int animation = 0;
 	
 	private static final int SPEED = 2;
-	private static final int JUMP_VELOCITY = 3;
+	private static final int JUMP_VELOCITY = 4;
 	
 	int texture = 0;
 	TextureRegion[][] sprite;
@@ -44,21 +40,23 @@ public class Player extends Entity {
 	@Override
 	public void update(float delta, float gravity) {
 			
+		
+		super.update(delta, gravity);
+		movePlayer(delta);
+		updateItem();
+	}
+	
+	private void movePlayer(float delta) {
+		boolean left = false;
+		boolean right = false;
+		boolean up = false;
+		boolean down = false;
+		
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += JUMP_VELOCITY * getWeight();
 		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0) {
 			this.velocityY += JUMP_VELOCITY * getWeight() * delta;
 		}
-		super.update(delta, gravity);
-		
-		movePlayer();
-	}
-	
-	private void movePlayer() {
-		boolean left = false;
-		boolean right = false;
-		boolean up = false;
-		boolean down = false;
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			moveX(-SPEED);
@@ -88,14 +86,26 @@ public class Player extends Entity {
 		}
 		
 		
-		updateItem();
+		
 		updateTexture(left, right, up, down);
 	}
 	
+	/**
+	 * Updates Players Selected Item If New Inventory Slot Selected
+	 */
 	private void updateItem() {
 		if(!inventory.isEmpty()) {
-			if(inventory.getSize() >= 1 && item == null) {
+			if(item == null && inventory.getSize() > 0 || !inventory.isEmpty(item)) {
 				item = inventory.getItemAt(0);
+			}
+			if(item.getType().isItem()) {
+				for(InventoryItem items : inventory.getItems()) {
+					if(!items.getType().isItem()) {
+						item = items;
+						break;
+					}
+					item = null;
+				}
 			}
 			if(Gdx.input.isKeyPressed(Keys.NUM_1) && inventory.getSize() >= 1) {
 				item = inventory.getItemAt(0);
@@ -121,6 +131,7 @@ public class Player extends Entity {
 		} else {
 			item = null;
 		}
+		selectedItem = inventory.getItems().indexOf(item);
 	}
 	
 	/**
@@ -130,31 +141,39 @@ public class Player extends Entity {
 	 */
 	public void build(Camera camera, Map map) {
 		if(Gdx.input.isTouched()) {
+			boolean shiftLeft = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
+			boolean mouseLeft = Gdx.input.isButtonPressed(Buttons.LEFT);
+			boolean mouseRight = Gdx.input.isButtonPressed(Buttons.RIGHT);
 			Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-			
 			// Set Tile
-			if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-				TileType topTile = map.getTileTypeByLocation(1, pos.x, pos.y);
-				TileType bottomTile = map.getTileTypeByLocation(0, pos.x, pos.y);
-				if(item != null) {
-					if(topTile != item.getType() && bottomTile != item.getType()) {
-						if(inventory.getItem(item) != null && inventory.getItem(item).getNumber() > 0) {
-							inventory.removeItemFrom(item);
+			if(mouseRight) {
+				if(item != null && !item.getType().isItem() && inventory.getItem(item) != null && inventory.getItem(item).getNumber() > 0) {
+					if(map.getTileTypeByLocation(1, pos.x, pos.y) != item.getType() && map.getTileTypeByLocation(5, pos.x, pos.y) != item.getType()) {
+						if(shiftLeft && map.getTileTypeByLocation(1, pos.x, pos.y) == TileType.AIR || shiftLeft && map.getTileTypeByLocation(1, pos.x, pos.y) == null) {
 							map.setTile(item.getType(), 1, pos.x, pos.y);
+							inventory.removeItemFrom(item);
+						} else if (map.getTileTypeByLocation(5, pos.x, pos.y) == TileType.AIR && map.getTileTypeByLocation(5, pos.x, pos.y) == TileType.AIR  || map.getTileTypeByLocation(1, pos.x, pos.y) == null && map.getTileTypeByLocation(5, pos.x, pos.y) == null){
+							map.setTile(item.getType(), 5, pos.x, pos.y);
+							inventory.removeItemFrom(item);
 						}
 					}
 				}
 			}
 			
-			// Break Tile
-			if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-				TileType topTile = map.getTileTypeByLocation(1, pos.x, pos.y);
-				TileType bottomTile = map.getTileTypeByLocation(0, pos.x, pos.y);
-				if(topTile != TileType.SKY && topTile != null || bottomTile != TileType.SKY && bottomTile != null) {
-					inventory.add(topTile);
+				// Break Tile
+			if(mouseLeft) {
+			TileType tile = null;
+				for(int layer = map.getLayers() -1; layer > 0; layer--) {
+					TileType layerTile = map.getTileTypeByLocation(layer, pos.x, pos.y);
+					if(layerTile != null || layerTile != TileType.AIR) {
+						tile = layerTile;
+						map.setTile(TileType.AIR, layer, pos.x, pos.y);
+						if(tile != null && tile != TileType.AIR) {
+							inventory.add(tile);
+						}
+					}
 				}
-				map.setTile(TileType.SKY, 0, pos.x, pos.y);
-				map.setTile(TileType.SKY, 1, pos.x, pos.y);
+				
 			}
 		}
 	}
@@ -186,7 +205,7 @@ public class Player extends Entity {
 		texture = no;
 	}
 
-	public void animate() {
+	public void animateTexture() {
 		if(animation == 0) {
 			animation = 1;
 		} else {

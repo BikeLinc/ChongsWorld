@@ -13,7 +13,14 @@ public class MapGenerator {
 		MapData mapData = new MapData();
 		mapData.id = id;
 		mapData.name = id;
-		mapData.map = new int[2][size][size];
+		mapData.map = new int[6][size][size];
+		
+		// 0 - BG
+		// 1 - Walls
+		// 2 - Events (Triggers)
+		// 3 - Liquids
+		// 4 - Items
+		// 5 - Blocks (Collider)
 		
 		Random rand = new Random();
 		
@@ -25,7 +32,7 @@ public class MapGenerator {
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
 				
-				// Layer 0
+				// Layer 0 
 				mapData.map[0][row][col] = TileType.SKY.getId();
 				
 				// Layer 1
@@ -33,43 +40,58 @@ public class MapGenerator {
 				
 				if(row >= rowHeight) {
 					if (row - rowHeight == 0) {
-						mapData.map[1][row][col] = TileType.GRASS.getId();
+						mapData.map[5][row][col] = TileType.GRASS.getId();
 					} else if (row - rowHeight == 1 || row - rowHeight == 2 || row - rowHeight == 3 ) {
-						mapData.map[1][row][col] = TileType.DIRT.getId();
+						mapData.map[5][row][col] = TileType.DIRT.getId();
 					} else {
-						mapData.map[1][row][col] = TileType.STONE.getId();
+						int prob = rand.nextInt(20);
+						if(prob >  4) {
+							mapData.map[5][row][col] = TileType.STONE.getId();
+						} else {
+							mapData.map[5][row][col] = TileType.IRON_ORE.getId();
+						}
+						
 					}
 				}
 				
-				
 				if(trees[col] == 1 && col > 3 && col < (size - 3)) {
 					if(row - rowHeight  + 1 == 0 || row - rowHeight  + 2 == 0 || row - rowHeight  + 3 == 0  || row - rowHeight  + 4 == 0 || row - rowHeight  + 5 == 0) {
-						mapData.map[1][row][col] = TileType.WOOD.getId();
+						mapData.map[1][row][col] = TileType.WOOD_LOG.getId();
 					}
 					
 					if(row - rowHeight  + 6 == 0 || row - rowHeight  + 7 == 0 || row - rowHeight  + 8 == 0  || row - rowHeight  + 9 == 0) {
-						mapData.map[1][row][col] = TileType.WOOD.getId();
-						mapData.map[0][row][col - 1] = TileType.LEAF.getId();
-						mapData.map[0][row][col + 1] = TileType.LEAF.getId();
-						mapData.map[1][row][col - 1] = getLeaf(rand);
-						mapData.map[1][row][col + 1] = getLeaf(rand);
+						mapData.map[1][row][col] = TileType.WOOD_LOG.getId();
+						mapData.map[1][row][col - 1] = TileType.LEAF.getId();
+						mapData.map[1][row][col + 1] = TileType.LEAF.getId();
+						mapData.map[4][row][col - 1] = getLeaf(rand);
+						mapData.map[4][row][col + 1] = getLeaf(rand);
 					}
 					if(row - rowHeight  + 10 == 0 || row - rowHeight  + 11 == 0) {
-						mapData.map[0][row][col] = TileType.LEAF.getId();
-						mapData.map[0][row][col - 1] = TileType.LEAF.getId();
-						mapData.map[1][row][col] = getLeaf(rand);
+						mapData.map[1][row][col] = TileType.LEAF.getId();
+						mapData.map[1][row][col - 1] = TileType.LEAF.getId();
+						mapData.map[4][row][col] = getLeaf(rand);
 						mapData.map[1][row][col - 1] = getLeaf(rand);
 					}
 				}
 				if(col > 3 && col < (size - 3) && trees[col - 1] == 1) {
 					if(row - rowHeight  + 6 == 0 || row - rowHeight  + 7 == 0 || row - rowHeight  + 8 == 0  || row - rowHeight  + 9 == 0) {
-						mapData.map[0][row][col] = TileType.LEAF.getId();
-						mapData.map[1][row][col] = getLeaf(rand);
+						mapData.map[1][row][col] = TileType.LEAF.getId();
+						mapData.map[4][row][col] = getLeaf(rand);
 					}
 					if(row - rowHeight  + 10 == 0 || row - rowHeight  + 11 == 0) {
-						mapData.map[0][row][col] = TileType.LEAF.getId();;
-						mapData.map[1][row][col] = getLeaf(rand);
+						mapData.map[1][row][col] = TileType.LEAF.getId();;
+						mapData.map[4][row][col] = getLeaf(rand);
 					}
+				}
+				
+
+
+				if(mapData.map[5][row][col] == 0) {
+					mapData.map[5][row][col] = TileType.AIR.getId();
+				} else if(mapData.map[3][row][col] == 0) {
+					mapData.map[3][row][col] = TileType.AIR.getId();
+				} else if(mapData.map[1][row][col] == 0) {
+					mapData.map[1][row][col] = TileType.AIR.getId();
 				}
 			}
 		}
@@ -97,7 +119,7 @@ public class MapGenerator {
 		if(prob <  2) {
 			return TileType.MANGO.getId();
 		} else {
-			return TileType.LEAF.getId();
+			return 0;
 		}
 	}
 }

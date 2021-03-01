@@ -13,8 +13,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 
 import entities.Camera;
-import inventory.Inventory;
-import inventory.InventoryItem;
 
 public class UIManager {
 
@@ -25,17 +23,11 @@ public class UIManager {
 	Sprite background;
 	
 	public void loadFont() {
-//		File fontFile = new File(new File("").getAbsolutePath() + "/ui/mcfont18.fnt");
-//		FileHandle fontFileHandle = new FileHandle(fontFile);
-//		File texFile = new File(new File("").getAbsolutePath() + "/ui/mcfont18.png");
-//		FileHandle texFileHandle = new FileHandle(texFile);
-//		font = new BitmapFont(fontFileHandle,texFileHandle,false);
-//		font.setColor(1,0,0,1);
 		File fontFile = new File(new File("").getAbsolutePath() + "/ui/wayfarers.ttf");
 		FileHandle fontFileHandle = new FileHandle(fontFile);
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFileHandle);
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 18;
+		parameter.size = 7;
 		font = generator.generateFont(parameter);
 	}
 	
@@ -63,18 +55,18 @@ public class UIManager {
 		float xOffset = 0;
 		// Draws Inventory
 		for(String str : inventory) {
-			if(str == inventory[selItem]) {
-				bg = Color.WHITE;
-			} else {
-				bg = Color.BLACK;
-			}
-			
+			System.out.println(str + " " + inventory[selItem]);
 			if(str != "" && str != null) {
+				if(str == inventory[selItem]) {
+					bg = Color.WHITE;
+				} else {
+					bg = Color.LIGHT_GRAY;
+				}
 				if(str == inventory[0]) { // First Inventory Slot
-					drawTextWithBackground(batch, str, color, Color.LIGHT_GRAY, 15, 430, 5);
+					drawTextWithBackground(batch, str, color, bg, 15, 430, 5);
 					xOffset += 15 + getTextWidth(str);
 				} else {				  // Non-First Inventory Slot
-					drawTextWithBackground(batch, str, color, Color.LIGHT_GRAY, 20 + xOffset, 430, 5);
+					drawTextWithBackground(batch, str, color, bg, 20 + xOffset, 430, 5);
 					xOffset += 20 + getTextWidth(str);
 				}
 			}

@@ -19,15 +19,15 @@ public class MapLoader {
 	public static MapData loadMap(String id, String name) {
 		Gdx.files.local("maps/").file().mkdirs();
 		FileHandle file = Gdx.files.local("maps/" + id + ".chongo");
-		if (file.exists()) {
-			MapData data = json.fromJson(MapData.class, file.readString());
-			return data;
-		} else {
+//		if (file.exists()) {
+//			MapData data = json.fromJson(MapData.class, file.readString());
+//			return data;
+//		} else {
 			MapData data = MapGenerator.generateRandomMap(id, name, SIZE);
 			saveMap(data);
 			return data;
 		}
-	}
+//	}
 	
 	/**
 	 * Saves MapData

@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import entities.Camera;
 import gameMap.Map;
-import inventory.Inventory;
 import userinterface.UIManager;
 
 public class MainGameLoop extends ApplicationAdapter {
@@ -48,12 +47,12 @@ public class MainGameLoop extends ApplicationAdapter {
 		// UI Update
 		batch.begin();
 		ui.update(camera);
-		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().selItem);
+		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().selectedItem);
 		batch.end();
 		
 		
 		if(seconds > 25) { 
-			map.getPlayer().animate();
+			map.getPlayer().animateTexture();
 			seconds = 0;
 		}
 		seconds += ((System.nanoTime() - start)/1000000.0);
