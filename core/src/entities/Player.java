@@ -1,5 +1,7 @@
 package entities;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -13,6 +15,7 @@ import gameMap.GameMap;
 import gameMap.Map;
 import inventory.Inventory;
 import inventory.InventoryItem;
+import utils.FileTool;
 import world.TileType;
 
 public class Player extends Entity {
@@ -22,22 +25,19 @@ public class Player extends Entity {
 	public int active = 0;
 	public Inventory inventory;
 	public InventoryItem item;
+	public int selItem = 0;
 	
 	public int animation = 0;
 	
 	private static final int SPEED = 2;
 	private static final int JUMP_VELOCITY = 3;
-	private boolean left = false;
-	private boolean right = false;
-	private boolean up = false;
-	private boolean down = false;
 	
 	int texture = 0;
 	TextureRegion[][] sprite;
 
 	public Player(float x, float y, GameMap gameMap) {
 		super(x, y, EntityType.PLAYER, gameMap);
-		sprite = TextureRegion.split(new Texture("chongo2.png"), 16, 16);
+		sprite = TextureRegion.split(new Texture(FileTool.getPath() + "/assets/chongo2.png"), 16, 16);
 		inventory = new Inventory();
 	}
 	
@@ -51,8 +51,14 @@ public class Player extends Entity {
 		}
 		super.update(delta, gravity);
 		
-		left = false;
-		right = false;
+		movePlayer();
+	}
+	
+	private void movePlayer() {
+		boolean left = false;
+		boolean right = false;
+		boolean up = false;
+		boolean down = false;
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			moveX(-SPEED);
@@ -81,20 +87,39 @@ public class Player extends Entity {
 			down = false;
 		}
 		
-		if(left) {
-			setTexture(2 + animation);
-		}
-		if(right) {
-			setTexture(0 + animation);
-		}
-		if(!left && !right) {
-			setTexture(4 + animation);
-		}
-		if(up) {
-			setTexture(6);
-		}
-		if(down) {
-			setTexture(7);
+		
+		updateItem();
+		updateTexture(left, right, up, down);
+	}
+	
+	private void updateItem() {
+		if(!inventory.isEmpty()) {
+			if(inventory.getSize() >= 1 && item == null) {
+				item = inventory.getItemAt(0);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_1) && inventory.getSize() >= 1) {
+				item = inventory.getItemAt(0);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_2) && inventory.getSize() >= 2) {
+				item = inventory.getItemAt(1);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_3) && inventory.getSize() >= 3) {
+				item = inventory.getItemAt(2);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_4) && inventory.getSize() >= 4) {
+				item = inventory.getItemAt(3);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_5) && inventory.getSize() >= 5) {
+				item = inventory.getItemAt(4);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_6) && inventory.getSize() >= 6) {
+				item = inventory.getItemAt(5);
+			}
+			if(Gdx.input.isKeyPressed(Keys.NUM_7) && inventory.getSize() >= 7) {
+				item = inventory.getItemAt(6);
+			}
+		} else {
+			item = null;
 		}
 	}
 	
@@ -109,8 +134,15 @@ public class Player extends Entity {
 			
 			// Set Tile
 			if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+				TileType topTile = map.getTileTypeByLocation(1, pos.x, pos.y);
+				TileType bottomTile = map.getTileTypeByLocation(0, pos.x, pos.y);
 				if(item != null) {
-					map.setTile(item.getType(), 1, pos.x, pos.y);
+					if(topTile != item.getType() && bottomTile != item.getType()) {
+						if(inventory.getItem(item) != null && inventory.getItem(item).getNumber() > 0) {
+							inventory.removeItemFrom(item);
+							map.setTile(item.getType(), 1, pos.x, pos.y);
+						}
+					}
 				}
 			}
 			
@@ -132,11 +164,24 @@ public class Player extends Entity {
 		batch.draw(sprite[0][texture], pos.x, pos.y, getWidth(), getHeight());
 	}
 	
+	private void updateTexture(boolean left, boolean right, boolean up, boolean down) {
+		if(left) {
+			setTexture(2 + animation);
+		}
+		if(right) {
+			setTexture(0 + animation);
+		}
+		if(!left && !right) {
+			setTexture(4 + animation);
+		}
+		if(up) {
+			setTexture(6);
+		}
+		if(down) {
+			setTexture(7);
+		}
+	}
 	
-	// 0 - Left
-	// 1 - Right
-	// 2 - Up
-	// 3 - Down
 	private void setTexture(int no) {
 		texture = no;
 	}

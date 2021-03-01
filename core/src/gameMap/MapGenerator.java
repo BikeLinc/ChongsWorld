@@ -44,7 +44,7 @@ public class MapGenerator {
 				
 				if(trees[col] == 1 && col > 3 && col < (size - 3)) {
 					if(row - rowHeight  + 1 == 0 || row - rowHeight  + 2 == 0 || row - rowHeight  + 3 == 0  || row - rowHeight  + 4 == 0 || row - rowHeight  + 5 == 0) {
-						mapData.map[0][row][col] = TileType.WOOD.getId();
+						mapData.map[1][row][col] = TileType.WOOD.getId();
 					}
 					
 					if(row - rowHeight  + 6 == 0 || row - rowHeight  + 7 == 0 || row - rowHeight  + 8 == 0  || row - rowHeight  + 9 == 0) {

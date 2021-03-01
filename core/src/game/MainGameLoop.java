@@ -48,7 +48,7 @@ public class MainGameLoop extends ApplicationAdapter {
 		// UI Update
 		batch.begin();
 		ui.update(camera);
-		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().item);
+		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().selItem);
 		batch.end();
 		
 		
@@ -67,10 +67,6 @@ public class MainGameLoop extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
-		String[] inventory = map.getPlayer().inventory.getInventoryAsLabeledStringArray();
-		for(int i = 0; i < inventory.length; i++) {
-			System.out.println(inventory[i]);
-		}
 		
 		map.dispose();
 		batch.dispose();

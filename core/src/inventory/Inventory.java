@@ -27,6 +27,19 @@ public class Inventory {
 		return false;
 	}
 	
+	public void removeItemFrom(InventoryItem item) {
+		for(InventoryItem inventoryItem : items) {
+			if(inventoryItem.getType() == item.getType()) {
+				if(inventoryItem.getNumber() -1 < 1) {
+					items.remove(inventoryItem);
+				} else {
+					inventoryItem.addNumber(-1);
+				}
+				break;
+			}
+		}
+	}
+	
 	public void setNumberToItem(InventoryItem item, int amt) {
 		for(InventoryItem inventoryItem : items) {
 			if(inventoryItem.getType() == item.getType()) {
@@ -45,6 +58,14 @@ public class Inventory {
 		return null;
 	}
 	
+	public InventoryItem getItemAt(int index) {
+		if(index > items.size() || index < 0) {
+			return null;
+		} else {
+			return items.get(index);
+		}
+	}
+	
 	public String[] getInventoryAsLabeledStringArray() {
 		String[] str = new String[items.size()];
 		for(int i = 0; i < str.length; i++) {
@@ -54,6 +75,13 @@ public class Inventory {
 			}
 		}
 		return str;
+	}
+	
+	public int getSize() {
+		return items.size();
+	}
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 }
 
