@@ -63,24 +63,24 @@ public class MapGenerator {
 						mapData.map[1][row][col] = TileType.WOOD_LOG.getId();
 						mapData.map[1][row][col - 1] = TileType.LEAF.getId();
 						mapData.map[1][row][col + 1] = TileType.LEAF.getId();
-						mapData.map[4][row][col - 1] = getLeaf(rand);
-						mapData.map[4][row][col + 1] = getLeaf(rand);
+						mapData.map[5][row][col - 1] = getLeaf(rand);
+						mapData.map[5][row][col + 1] = getLeaf(rand);
 					}
 					if(row - rowHeight  + 10 == 0 || row - rowHeight  + 11 == 0) {
 						mapData.map[1][row][col] = TileType.LEAF.getId();
 						mapData.map[1][row][col - 1] = TileType.LEAF.getId();
-						mapData.map[4][row][col] = getLeaf(rand);
+						mapData.map[5][row][col] = getLeaf(rand);
 						mapData.map[1][row][col - 1] = getLeaf(rand);
 					}
 				}
 				if(col > 3 && col < (size - 3) && trees[col - 1] == 1) {
 					if(row - rowHeight  + 6 == 0 || row - rowHeight  + 7 == 0 || row - rowHeight  + 8 == 0  || row - rowHeight  + 9 == 0) {
 						mapData.map[1][row][col] = TileType.LEAF.getId();
-						mapData.map[4][row][col] = getLeaf(rand);
+						mapData.map[5][row][col] = getLeaf(rand);
 					}
 					if(row - rowHeight  + 10 == 0 || row - rowHeight  + 11 == 0) {
 						mapData.map[1][row][col] = TileType.LEAF.getId();;
-						mapData.map[4][row][col] = getLeaf(rand);
+						mapData.map[5][row][col] = getLeaf(rand);
 					}
 				}
 				

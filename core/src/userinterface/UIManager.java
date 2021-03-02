@@ -55,9 +55,8 @@ public class UIManager {
 		float xOffset = 0;
 		// Draws Inventory
 		for(String str : inventory) {
-			System.out.println(str + " " + inventory[selItem]);
 			if(str != "" && str != null) {
-				if(str == inventory[selItem]) {
+				if(selItem > -1 && str == inventory[selItem]) {
 					bg = Color.WHITE;
 				} else {
 					bg = Color.LIGHT_GRAY;
