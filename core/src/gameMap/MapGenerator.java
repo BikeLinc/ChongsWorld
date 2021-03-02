@@ -41,14 +41,18 @@ public class MapGenerator {
 				if(row >= rowHeight) {
 					if (row - rowHeight == 0) {
 						mapData.map[5][row][col] = TileType.GRASS.getId();
+						mapData.map[1][row][col] = TileType.GRASS.getId();
 					} else if (row - rowHeight == 1 || row - rowHeight == 2 || row - rowHeight == 3 ) {
 						mapData.map[5][row][col] = TileType.DIRT.getId();
+						mapData.map[1][row][col] = TileType.DIRT.getId();
 					} else {
 						int prob = rand.nextInt(20);
 						if(prob >  4) {
 							mapData.map[5][row][col] = TileType.STONE.getId();
+							mapData.map[1][row][col] = TileType.STONE.getId();
 						} else {
 							mapData.map[5][row][col] = TileType.IRON_ORE.getId();
+							mapData.map[1][row][col] = TileType.IRON_ORE.getId();
 						}
 						
 					}

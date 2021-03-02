@@ -39,11 +39,14 @@ public class Player extends Entity {
 	
 	@Override
 	public void update(float delta, float gravity) {
-			
-		
 		super.update(delta, gravity);
 		movePlayer(delta);
 		updateItem();
+	}
+	
+	@Override
+	public void render(SpriteBatch batch) {
+		batch.draw(sprite[0][texture], pos.x, pos.y, getWidth(), getHeight());
 	}
 	
 	private void movePlayer(float delta) {
@@ -164,6 +167,7 @@ public class Player extends Entity {
 			if(mouseLeft) {
 			TileType tile = null;
 				for(int layer = map.getLayers() -1; layer > 0; layer--) {
+					System.out.println(layer);
 					TileType layerTile = map.getTileTypeByLocation(layer, pos.x, pos.y);
 					if(layerTile != null || layerTile != TileType.AIR) {
 						tile = layerTile;
@@ -178,9 +182,10 @@ public class Player extends Entity {
 		}
 	}
 
-	@Override
-	public void render(SpriteBatch batch) {
-		batch.draw(sprite[0][texture], pos.x, pos.y, getWidth(), getHeight());
+	private void placeBlock(float x, float y) { }
+	
+	private void breakBlock(float x, float y) {
+		
 	}
 	
 	private void updateTexture(boolean left, boolean right, boolean up, boolean down) {
