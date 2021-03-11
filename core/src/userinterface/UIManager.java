@@ -1,10 +1,6 @@
 package userinterface;
 
-import java.io.File;
-
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 
 import entities.Camera;
+import inventory.Inventory;
+import utils.AssetManager;
 
 public class UIManager {
 
@@ -21,21 +19,13 @@ public class UIManager {
 	
 	BitmapFont font;
 	Sprite background;
+	Sprite slot;
 	
 	public void loadFont() {
-		File fontFile = new File(new File("").getAbsolutePath() + "/ui/wayfarers.ttf");
-		FileHandle fontFileHandle = new FileHandle(fontFile);
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFileHandle);
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(AssetManager.getFileHandle("/ui/wayfarers.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 7;
+		parameter.size = 7; // Sets Font Size
 		font = generator.generateFont(parameter);
-	}
-	
-	public void loadTextures() {
-		File texFile = new File(new File("").getAbsolutePath() + "/ui/bg.png");
-		FileHandle texFileHandle = new FileHandle(texFile);
-		Texture texture = new Texture(texFileHandle);
-		background = new Sprite(texture);
 	}
 	
 	public void update(Camera camera) {
@@ -44,33 +34,36 @@ public class UIManager {
 		yStart = pos.y;
 	}
 	
-	public void drawPlayerInformation(SpriteBatch batch, String health, String[] inventory, int selItem) {
-		Color bg = Color.LIGHT_GRAY;
-		Color color = Color.MAROON;
-		
-		// Draws Health
-		drawTextWithBackground(batch, "Health " + health, color, bg, 15, 20, 5);
-		
-		color = Color.BLACK;
-		float xOffset = 0;
-		// Draws Inventory
-		for(String str : inventory) {
-			if(str != "" && str != null) {
-				if(selItem > -1 && str == inventory[selItem]) {
-					bg = Color.WHITE;
+	public void drawHUD(SpriteBatch batch, float x, float y, float width, float height, Inventory inventory, int selItem) {
+		for(int slotNo = 0; slotNo < 6; slotNo++) {
+			if(selItem == slotNo) {
+				batch.setColor(Color.WHITE);
+			} else {
+				batch.setColor(Color.LIGHT_GRAY);
+			}
+			batch.draw(AssetManager.getSprite("/ui/inventorySlot.png"), xStart + x, yStart - (y * (slotNo + 1)) - (height * (slotNo + 1)), width, height);
+		}
+		if(!inventory.isEmpty()) {
+			for(int i = 0; i < inventory.getSize() && i < 6; i++) {
+				int id = inventory.getItemByIndex(i).getType().getId();
+				int tileY =	(id -1)/6;
+				int tileX = (id -1) - (tileY * 6);
+				batch.setColor(Color.WHITE);
+				if(i == 0) {
+					batch.draw(AssetManager.getTiles()[tileY][tileX], xStart + x + 8, yStart - (y) - (height) + 8, 16, 16);
+					drawText(batch, inventory.getItemByIndex(i).getNumber(), Color.WHITE, x - 3,(height) - 10);
 				} else {
-					bg = Color.LIGHT_GRAY;
-				}
-				if(str == inventory[0]) { // First Inventory Slot
-					drawTextWithBackground(batch, str, color, bg, 15, 430, 5);
-					xOffset += 15 + getTextWidth(str);
-				} else {				  // Non-First Inventory Slot
-					drawTextWithBackground(batch, str, color, bg, 20 + xOffset, 430, 5);
-					xOffset += 20 + getTextWidth(str);
+					batch.draw(AssetManager.getTiles()[tileY][tileX], xStart + x + 8, yStart - (y * (i + 1)) - (height * (i + 1)) + 8, 16, 16);
+					drawText(batch, inventory.getItemByIndex(i).getNumber(), Color.WHITE, x - 3,(y * (i + 1)) + (height * (i + 1)) - y - 10);
 				}
 			}
 		}
 	}
+	
+	public void drawInventory(SpriteBatch batch, float x, float y, float width, float height) {
+		batch.draw(AssetManager.getSprite("/ui/inventoryMain.png"), xStart + x, yStart - y - height);
+	}
+	
 	
 	public void drawTextWithBackground(SpriteBatch batch, String text, Color foregroundColor, Color backgroundColor, float x, float y, float margin) {
 		batch.setColor(backgroundColor);
@@ -79,13 +72,18 @@ public class UIManager {
 		drawText(batch, text, foregroundColor, x + margin, y + margin);
 	}
 	
+	public void drawText(SpriteBatch batch, int text, Color color, float x, float y) {
+		font.setColor(color);
+		font.draw(batch, Integer.toString(text),  xStart + x, yStart - y);
+	}
+	
 	public void drawText(SpriteBatch batch, String text, Color color, float x, float y) {
 		font.setColor(color);
 		font.draw(batch, text,  xStart + x, yStart - y);
 	}
 	
 	public void drawBG(SpriteBatch batch, float x, float y, float width, float height) {
-		batch.draw(background, xStart + x, yStart - y - height, width, height);
+		batch.draw(AssetManager.getSprite("/ui/bg.png"), xStart + x, yStart - y - height, width, height);
 	}
 	
 	public float getTextWidth(String text) {

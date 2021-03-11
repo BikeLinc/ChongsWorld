@@ -8,8 +8,8 @@ import gameMap.GameMap;
 
 public class Camera extends OrthographicCamera{
 	
-	float width = Gdx.graphics.getWidth();
-	float height = Gdx.graphics.getHeight();
+	float width;
+	float height;
 	
 	public Camera() {
 		setup();
@@ -36,9 +36,15 @@ public class Camera extends OrthographicCamera{
 	public void update(GameMap map) {
 		float newWidth = Gdx.graphics.getWidth();
 		float newHeight = Gdx.graphics.getHeight();
-		this.setToOrtho(false, width + ((newWidth - width) / 8), height + ((newHeight - height)/8));
+		if(newWidth != width || newHeight != height) {
+			this.setToOrtho(false, newWidth / 4, newHeight / 4);
+		}
+		height = newHeight;
+		width = newWidth;
 		followPlayer(map);
 		super.update();
 	}
+	
+		
 	
 }

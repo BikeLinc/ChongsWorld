@@ -19,15 +19,16 @@ public class MapLoader {
 	public static MapData loadMap(String id, String name) {
 		Gdx.files.local("maps/").file().mkdirs();
 		FileHandle file = Gdx.files.local("maps/" + id + ".chongo");
-//		if (file.exists()) {
-//			MapData data = json.fromJson(MapData.class, file.readString());
-//			return data;
-//		} else {
+		if (file.exists()) {
+			MapData data = json.fromJson(MapData.class, file.readString());
+			System.out.println("Map Loaded: " + "\"" + id + ".chongo\"");
+			return data;
+		} else {
 			MapData data = MapGenerator.generateRandomMap(id, name, SIZE);
 			saveMap(data);
 			return data;
 		}
-//	}
+	}
 	
 	/**
 	 * Saves MapData
@@ -39,5 +40,6 @@ public class MapLoader {
 		Gdx.files.local("maps/").file().mkdirs();
 		FileHandle file = Gdx.files.local("maps/" + data.id + ".chongo");
 		file.writeString(json.prettyPrint(data), false);
+		System.out.println("Map Saved As: " + "\"" + data.id + ".chongo\"");
 	}
 }

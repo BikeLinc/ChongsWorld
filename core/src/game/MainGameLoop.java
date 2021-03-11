@@ -2,6 +2,7 @@ package game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -9,7 +10,7 @@ import entities.Camera;
 import gameMap.Map;
 import userinterface.UIManager;
 
-public class MainGameLoop extends ApplicationAdapter {
+public class MainGameLoop extends ApplicationAdapter{
 	
 	UIManager ui = new UIManager();
 	
@@ -24,7 +25,6 @@ public class MainGameLoop extends ApplicationAdapter {
 	@Override
 	public void create() {
 		ui.loadFont();
-		ui.loadTextures();
 		
 		batch = new SpriteBatch();
 		camera = new Camera();
@@ -40,14 +40,15 @@ public class MainGameLoop extends ApplicationAdapter {
 		
 		// World Update
 		camera.update(map);
-		map.getPlayer().build(camera, map);
 		map.update(delta);
+		map.getPlayer().update(camera, map, delta, -9.8f);
 		map.render(camera, batch);
 				
 		// UI Update
 		batch.begin();
 		ui.update(camera);
-		ui.drawPlayerInformation(batch, Integer.toString(map.getPlayer().health), map.getPlayer().inventory.getInventoryAsLabeledStringArray(), map.getPlayer().selectedItem);
+		ui.drawHUD(batch, 20, 24, 32, 32, map.getPlayer().inventory, map.getPlayer().selectedItem);
+		ui.drawInventory(batch, 72, 50, 160, 256);
 		batch.end();
 		
 		

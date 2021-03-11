@@ -10,24 +10,23 @@ public class Inventory {
 	List<InventoryItem> items = new ArrayList<>();
 	
 	public void add(TileType tile) {
-		
-		boolean exists = addNumberToItem(tile, 1);
-		if(!exists) {
+		if(isTileTypeInInventory(tile)) {
+			increase(getItemByTileType(tile));
+		} else {
 			items.add(new InventoryItem(tile, 1));
 		}
 	}
 	
-	public boolean addNumberToItem(TileType type, int amt) {
+	public void increase(InventoryItem item) {
 		for(InventoryItem inventoryItem : items) {
-			if(inventoryItem.getType() == type) {
-				inventoryItem.addNumber(amt);
-				return true;
+			if(inventoryItem.getType() == item.getType()) {
+				inventoryItem.addNumber(1);
+				break;
 			}
 		}
-		return false;
 	}
 	
-	public void removeItemFrom(InventoryItem item) {
+	public void decrease(InventoryItem item) {
 		for(InventoryItem inventoryItem : items) {
 			if(inventoryItem.getType() == item.getType()) {
 				if(inventoryItem.getNumber() -1 < 1) {
@@ -40,7 +39,7 @@ public class Inventory {
 		}
 	}
 	
-	public void setNumberToItem(InventoryItem item, int amt) {
+	public void setItemValue(InventoryItem item, int amt) {
 		for(InventoryItem inventoryItem : items) {
 			if(inventoryItem.getType() == item.getType()) {
 				inventoryItem.setNumber(amt);
@@ -49,7 +48,7 @@ public class Inventory {
 		}
 	}
 
-	public InventoryItem getItem(InventoryItem item) {
+	public InventoryItem getItemByItem(InventoryItem item) {
 		for(InventoryItem inventoryItem : items) {
 			if(inventoryItem.getType() == item.getType()) {
 				return inventoryItem;
@@ -58,12 +57,23 @@ public class Inventory {
 		return null;
 	}
 	
-	public InventoryItem getItemAt(int index) {
+	public InventoryItem getItemByIndex(int index) {
 		if(index > items.size() || index < 0) {
 			return null;
 		} else {
 			return items.get(index);
 		}
+	}
+	
+	public InventoryItem getItemByTileType(TileType type) {
+		if(isTileTypeInInventory(type)) {
+			for(InventoryItem item : items) {
+				if(item.getType() == type) {
+					return item;
+				}
+			}
+		}
+		return null;
 	}
 	
 	public List<InventoryItem> getItems() {
@@ -89,8 +99,17 @@ public class Inventory {
 		return items.isEmpty();
 	}
 	
-	public boolean isEmpty(InventoryItem item) {
+	public boolean isItemInInventory(InventoryItem item) {
 		return items.contains(item);
+	}
+	
+	public boolean isTileTypeInInventory(TileType tile) {
+		for(InventoryItem item : items) {
+			if(item.getType() == tile) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 

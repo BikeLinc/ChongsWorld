@@ -40,9 +40,6 @@ public abstract class GameMap {
 	 * @param delta
 	 */
 	public void update(float delta) {
-		for (Entity entity : entities) {
-			entity.update(delta, -9.8f);
-		}
 	}
 	
 	public abstract void dispose();

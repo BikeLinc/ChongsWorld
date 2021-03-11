@@ -4,11 +4,10 @@ import java.awt.Point;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import utils.FileTool;
+import utils.AssetManager;
 import world.TileType;
 
 public class Map extends GameMap {
@@ -22,7 +21,7 @@ public class Map extends GameMap {
 	public Map() {
 		this.data = MapLoader.loadMap("basic", "grass");
 		
-		tiles = TextureRegion.split(new Texture(FileTool.getPath() + "/assets/tiles4.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+		tiles = AssetManager.getTiles();
 	}
 
 	/**

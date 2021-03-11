@@ -1,9 +1,11 @@
 package entities;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import gameMap.GameMap;
+import gameMap.Map;
 
 public abstract class Entity {
 	
@@ -21,7 +23,7 @@ public abstract class Entity {
 		this.map = map;
 	}
 
-	public void update(float delta, float gravity) {
+	public void update(Camera camera, Map map, float delta, float gravity) {
 		float newY = pos.y;
 		
 		this.velocityY += gravity * delta * getWeight();
